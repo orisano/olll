@@ -46,4 +46,24 @@ def gramschmidt(v: Sequence[Vector]) -> Iterator[Vector]:
 
 
 def reduction(basis: Sequence[Sequence[int]], delta: float):
-    pass
+    n = len(basis)
+    ortho = list(gramschmidt(basis))
+
+    def mu(i: int, j: int) -> float:
+        return _dot(basis[i], ortho[j]) / _dot(ortho[j], ortho[j])
+
+    k = 1
+    while k <= n:
+        for j in range(k - 1, -1, -1):
+            mu_kj = mu(k, j)
+            if mu_kj > 0.5:
+                basis[k] = _sub(basis[k], _mul(basis[j], mu_kj))
+                ortho = list(gramschmidt(basis))
+        if _dot(ortho[k], ortho[k]) >= (delta - mu(k, k - 1)**2) * _dot(ortho[k - 1], ortho[k - 1]):
+            k += 1
+        else:
+            basis[k], basis[k - 1] = basis[k - 1], basis[k]
+            ortho = list(gramschmidt(basis))
+            k = max(k - 1, 1)
+
+    return basis
