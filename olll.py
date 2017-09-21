@@ -30,7 +30,7 @@ class Vector(list):
     def proj(self, rhs: "Vector") -> "Vector":
         """
         >>> Vector([1, 1, 1]).proj([-1, 0, 2])
-        [Fraction(1, 3), Fraction(1, 3), Fraction(1, 3)]
+        [1/3, 1/3, 1/3]
         """
         rhs = Vector(rhs)
         assert len(self) == len(rhs)
@@ -39,7 +39,7 @@ class Vector(list):
     def __sub__(self, rhs: "Vector") -> "Vector":
         """
         >>> Vector([1, 2, 3]) - [6, 5, 4]
-        [Fraction(-5, 1), Fraction(-3, 1), Fraction(-1, 1)]
+        [-5, -3, -1]
         """
         rhs = Vector(rhs)
         assert len(self) == len(rhs)
@@ -48,24 +48,27 @@ class Vector(list):
     def __mul__(self, rhs: Fraction) -> "Vector":
         """
         >>> Vector(["3/2", "4/5", "1/4"]) * 2
-        [Fraction(3, 1), Fraction(8, 5), Fraction(1, 2)]
+        [3, 8/5, 1/2]
         """
         return Vector(x * rhs for x in self)
 
     def __rmul__(self, lhs: Fraction) -> "Vector":
         """
         >>> 2 * Vector(["3/2", "4/5", "1/4"])
-        [Fraction(3, 1), Fraction(8, 5), Fraction(1, 2)]
+        [3, 8/5, 1/2]
         """
         return Vector(x * lhs for x in self)
+
+    def __repr__(self) -> str:
+        return "[{}]".format(", ".join(str(x) for x in self))
 
 
 def gramschmidt(v: Sequence[Vector]) -> Sequence[Vector]:
     """
     >>> gramschmidt([[3, 1], [2, 2]])
-    [[Fraction(3, 1), Fraction(1, 1)], [Fraction(-2, 5), Fraction(6, 5)]]
+    [[3, 1], [-2/5, 6/5]]
     >>> gramschmidt([[4, 1, 2], [4, 7, 2], [3, 1, 7]])
-    [[Fraction(4, 1), Fraction(1, 1), Fraction(2, 1)], [Fraction(-8, 7), Fraction(40, 7), Fraction(-4, 7)], [Fraction(-11, 5), Fraction(0, 1), Fraction(22, 5)]]
+    [[4, 1, 2], [-8/7, 40/7, -4/7], [-11/5, 0, 22/5]]
     """
     u: List[Vector] = []
     for vi in v:
