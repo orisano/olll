@@ -62,14 +62,17 @@ class Vector(list):
 
 def gramschmidt(v: Sequence[Vector]) -> Sequence[Vector]:
     """
-    >>> gramschmidt([[1, 3], [2, 2]])
-    [[Fraction(1, 1), Fraction(3, 1)]]
+    >>> gramschmidt([[3, 1], [2, 2]])
+    [[Fraction(3, 1), Fraction(1, 1)], [Fraction(-2, 5), Fraction(6, 5)]]
+    >>> gramschmidt([[4, 1, 2], [4, 7, 2], [3, 1, 7]])
+    [[Fraction(4, 1), Fraction(1, 1), Fraction(2, 1)], [Fraction(-8, 7), Fraction(40, 7), Fraction(-4, 7)], [Fraction(-11, 5), Fraction(0, 1), Fraction(22, 5)]]
     """
     u: List[Vector] = []
     for vi in v:
         ui = Vector(vi)
         for uj in u:
-            ui = ui - ui.proj(uj)
+            ui = ui - uj.proj(vi)
+
         if any(ui):
             u.append(ui)
     return u
@@ -77,23 +80,24 @@ def gramschmidt(v: Sequence[Vector]) -> Sequence[Vector]:
 
 def reduction(basis: Sequence[Sequence[int]], delta: float) -> Sequence[Vector]:
     """
-    >>> reduction([[4, 1, 2], [4, 7, 2], [3, 1, 7]], 0.9)
-    [[4, 1, 2], [-1, 0, 5], [0, 6, 0]]
+    >>> reduction([[1, 1, 1], [-1, 0, 2], [3, 5, 6]], 0.75)
+    [[Fraction(0, 1), Fraction(1, 1), Fraction(0, 1)], [Fraction(1, 1), Fraction(0, 1), Fraction(1, 1)], [Fraction(-1, 1), Fraction(0, 1), Fraction(2, 1)]]
     """
     n = len(basis)
     basis = list(map(Vector, basis))
     ortho = gramschmidt(basis)
 
     def mu(i: int, j: int) -> Fraction:
-        return abs(ortho[j].proj_coff(basis[i]))
+        return ortho[j].proj_coff(basis[i])
 
     k = 1
     while k < n:
         for j in range(k - 1, -1, -1):
             mu_kj = mu(k, j)
-            if mu_kj > 0.5:
-                basis[k] = basis[k] - basis[j] * mu_kj
+            if abs(mu_kj) > 0.5:
+                basis[k] = basis[k] - basis[j] * round(mu_kj)
                 ortho = gramschmidt(basis)
+
         if ortho[k].sdot() >= (delta - mu(k, k - 1)**2) * ortho[k - 1].sdot():
             k += 1
         else:
