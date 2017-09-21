@@ -6,7 +6,7 @@ class Vector(list):
     def __init__(self, x):
         super().__init__(map(Fraction, x))
 
-    def sdot(self):
+    def sdot(self) -> Fraction:
         return self.dot(self)
 
     def dot(self, rhs: "Vector") -> Fraction:
@@ -78,10 +78,12 @@ def gramschmidt(v: Sequence[Vector]) -> Sequence[Vector]:
     return u
 
 
-def reduction(basis: Sequence[Sequence[int]], delta: float) -> Sequence[Vector]:
+def reduction(basis: Sequence[Sequence[int]], delta: float) -> Sequence[Sequence[int]]:
     """
     >>> reduction([[1, 1, 1], [-1, 0, 2], [3, 5, 6]], 0.75)
-    [[Fraction(0, 1), Fraction(1, 1), Fraction(0, 1)], [Fraction(1, 1), Fraction(0, 1), Fraction(1, 1)], [Fraction(-1, 1), Fraction(0, 1), Fraction(2, 1)]]
+    [[0, 1, 0], [1, 0, 1], [-1, 0, 2]]
+    >>> reduction([[105, 821, 404, 328], [881, 667, 644, 927], [181, 483, 87, 500], [893, 834, 732, 441]], 0.75)
+    [[76, -338, -317, 172], [88, -171, -229, -314], [269, 312, -142, 186], [519, -299, 470, -73]]
     """
     n = len(basis)
     basis = list(map(Vector, basis))
@@ -105,4 +107,4 @@ def reduction(basis: Sequence[Sequence[int]], delta: float) -> Sequence[Vector]:
             ortho = gramschmidt(basis)
             k = max(k - 1, 1)
 
-    return basis
+    return [list(map(int, b)) for b in basis]
