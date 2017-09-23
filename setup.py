@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="olll",
-    version="1.0.0",
+    version="1.0.1",
     author="orisano",
     author_email="owan.orisano@gmail.com",
     description="A Python3 implementation of the LLL",
