@@ -22,7 +22,7 @@ reduced_basis = olll.reduction([
   [3, 5, 6],
 ], 0.75)
 
-print(reduced_basis);
+print(reduced_basis)
 # [[0, 1, 0], [1, 0, 1], [-1, 0, 2]]
 ```
 
