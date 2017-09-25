@@ -1,5 +1,5 @@
 from fractions import Fraction
-from typing import Iterator, List, Sequence
+from typing import Sequence
 
 
 class Vector(list):
