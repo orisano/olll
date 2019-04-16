@@ -26,5 +26,11 @@ print(reduced_basis)
 # [[0, 1, 0], [1, 0, 1], [-1, 0, 2]]
 ```
 
+## Author
+Nao YONASHIRO(@orisano)
+
+## License
+MIT
+
 ## Reference
 https://en.wikipedia.org/wiki/Lenstra%E2%80%93Lenstra%E2%80%93Lov%C3%A1sz_lattice_basis_reduction_algorithm
