@@ -99,6 +99,7 @@ def reduction(basis: Sequence[Sequence[int]], delta: float) -> Sequence[Sequence
     while k < n:
         for j in range(k - 1, -1, -1):
             mu_kj = mu(k, j)
+            print(mu_kj)
             if abs(mu_kj) > 0.5:
                 basis[k] = basis[k] - basis[j] * round(mu_kj)
                 ortho = gramschmidt(basis)

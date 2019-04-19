@@ -7,8 +7,8 @@ from fractions import Fraction
 class Vector(object):
     def __init__(self, x):
         fractions = list(map(Fraction, x))
-        self._numerators = np.array(list(map(lambda x: x.numerator, fractions)))
-        self._denominators = np.array(list(map(lambda x: x.denominator, fractions)))
+        self._numerators = np.array(list(map(lambda x: x.numerator, fractions)), dtype="object")
+        self._denominators = np.array(list(map(lambda x: x.denominator, fractions)), dtype="object")
 
     def sdot(self) -> Fraction:
         return self.dot(self)
@@ -19,7 +19,7 @@ class Vector(object):
 
     def proj_coff(self, rhs: "Vector") -> Fraction:
         """
-        >>> Vector([1, 1, 1]).proj_coff([-1, 0, 2])
+        >>> Vector([1, 1, 1]).proj_coff(Vector([-1, 0, 2]))
         Fraction(1, 3)
         """
         assert len(self) == len(rhs)
@@ -27,7 +27,7 @@ class Vector(object):
 
     def proj(self, rhs: "Vector") -> "Vector":
         """
-        >>> Vector([1, 1, 1]).proj([-1, 0, 2])
+        >>> Vector([1, 1, 1]).proj(Vector([-1, 0, 2]))
         [1/3, 1/3, 1/3]
         """
         assert len(self) == len(rhs)
@@ -35,7 +35,7 @@ class Vector(object):
 
     def __sub__(self, rhs: "Vector") -> "Vector":
         """
-        >>> Vector([1, 2, 3]) - [6, 5, 4]
+        >>> Vector([1, 2, 3]) - Vector([6, 5, 4])
         [-5, -3, -1]
         """
         assert len(self) == len(rhs)
@@ -83,12 +83,23 @@ class Vector(object):
         assert abs(self._numerators % self._denominators).sum() == 0
         return list(self._numerators // self._denominators)
 
+    def __repr__(self):
+        return "[{}]".format(", ".join(str(Fraction(self._numerators[i], self._denominators[i])) for i in range(len(self._numerators))))
+
+    def reduction(self):
+        gcd = np.gcd(self._numerators, self._denominators)
+
+        self._numerators //= gcd
+        self._denominators //= gcd
+
+        return self
+
 
 def gramschmidt(v: Sequence[Vector]) -> Sequence[Vector]:
     """
-    >>> gramschmidt([[3, 1], [2, 2]])
+    >>> gramschmidt([Vector([3, 1]), Vector([2, 2])])
     [[3, 1], [-2/5, 6/5]]
-    >>> gramschmidt([[4, 1, 2], [4, 7, 2], [3, 1, 7]])
+    >>> gramschmidt([Vector([4, 1, 2]), Vector([4, 7, 2]), Vector([3, 1, 7])])
     [[4, 1, 2], [-8/7, 40/7, -4/7], [-11/5, 0, 22/5]]
     """
     u: List[Vector] = []
@@ -120,6 +131,7 @@ def reduction(basis: Sequence[Sequence[int]], delta: float) -> Sequence[Sequence
     while k < n:
         for j in range(k - 1, -1, -1):
             mu_kj = mu(k, j)
+            print(mu_kj)
             if abs(mu_kj) > 0.5:
                 basis[k] = basis[k] - basis[j] * round(mu_kj)
                 ortho = gramschmidt(basis)
@@ -132,3 +144,4 @@ def reduction(basis: Sequence[Sequence[int]], delta: float) -> Sequence[Sequence
             k = max(k - 1, 1)
 
     return [b.get_integers() for b in basis]
+
