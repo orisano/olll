@@ -6,15 +6,14 @@ from fractions import Fraction
 
 class Vector(object):
     def __init__(self, x):
-        fractions = map(Fraction, x)
-        self._numerators = np.array(map(lambda x: x.numerator, fractions))
-        self._denominators = np.array(map(lambda x: x.denominator, fractions))
+        fractions = list(map(Fraction, x))
+        self._numerators = np.array(list(map(lambda x: x.numerator, fractions)))
+        self._denominators = np.array(list(map(lambda x: x.denominator, fractions)))
 
     def sdot(self) -> Fraction:
         return self.dot(self)
 
     def dot(self, rhs: "Vector") -> Fraction:
-        rhs = Vector(rhs)
         assert len(self) == len(rhs)
         return Fraction(np.dot(self._numerators, rhs._numerators), np.dot(self._denominators, rhs._denominators))
 
@@ -23,16 +22,22 @@ class Vector(object):
         >>> Vector([1, 1, 1]).proj_coff([-1, 0, 2])
         Fraction(1, 3)
         """
-        rhs = Vector(rhs)
         assert len(self) == len(rhs)
-        return self.dot(rhs) / self.sdot()
+        return Fraction(self.dot(rhs), self.sdot())
+
+    def proj(self, rhs: "Vector") -> "Vector":
+        """
+        >>> Vector([1, 1, 1]).proj([-1, 0, 2])
+        [1/3, 1/3, 1/3]
+        """
+        assert len(self) == len(rhs)
+        return self.proj_coff(rhs) * self
 
     def __sub__(self, rhs: "Vector") -> "Vector":
         """
         >>> Vector([1, 2, 3]) - [6, 5, 4]
         [-5, -3, -1]
         """
-        rhs = Vector(rhs)
         assert len(self) == len(rhs)
 
         return Vector._create_from_numerators_and_dominators(
@@ -46,8 +51,8 @@ class Vector(object):
         [3, 8/5, 1/2]
         """
         return Vector._create_from_numerators_and_dominators(
-            self._numerators * rhs,
-            self._denominators,
+            self._numerators * rhs.numerator,
+            self._denominators * rhs.denominator,
         )
 
     def __rmul__(self, lhs: Fraction) -> "Vector":
@@ -56,8 +61,8 @@ class Vector(object):
         [3, 8/5, 1/2]
         """
         return Vector._create_from_numerators_and_dominators(
-            lhs * self._numerators,
-            self._denominators,
+            lhs.numerator * self._numerators,
+            lhs.denominator * self._denominators,
         )
 
     def __len__(self):
@@ -71,6 +76,13 @@ class Vector(object):
 
         return v
 
+    def any(self):
+        return self._numerators.any()
+
+    def get_integers(self):
+        assert abs(self._numerators % self._denominators).sum() == 0
+        return list(self._numerators // self._denominators)
+
 
 def gramschmidt(v: Sequence[Vector]) -> Sequence[Vector]:
     """
@@ -81,11 +93,11 @@ def gramschmidt(v: Sequence[Vector]) -> Sequence[Vector]:
     """
     u: List[Vector] = []
     for vi in v:
-        ui = Vector(vi)
+        ui = vi
         for uj in u:
             ui = ui - uj.proj(vi)
 
-        if any(ui):
+        if ui.any():
             u.append(ui)
     return u
 
@@ -119,4 +131,4 @@ def reduction(basis: Sequence[Sequence[int]], delta: float) -> Sequence[Sequence
             ortho = gramschmidt(basis)
             k = max(k - 1, 1)
 
-    return [list(map(int, b)) for b in basis]
+    return [b.get_integers() for b in basis]
