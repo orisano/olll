@@ -1,7 +1,7 @@
 # oLLL
 
-[![PyPI version](https://badge.fury.io/py/owiener.svg)](https://badge.fury.io/py/owiener)
-[![Python Versions](https://img.shields.io/pypi/pyversions/owiener.svg)](https://pypi.org/project/owiener/)
+[![PyPI version](https://badge.fury.io/py/olll.svg)](https://badge.fury.io/py/olll)
+[![Python Versions](https://img.shields.io/pypi/pyversions/olll.svg)](https://pypi.org/project/olll/)
 
 A Python3 Implementation of LLL.
 
