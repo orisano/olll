@@ -1,4 +1,8 @@
 # oLLL
+
+[![PyPI version](https://badge.fury.io/py/owiener.svg)](https://badge.fury.io/py/owiener)
+[![Python Versions](https://img.shields.io/pypi/pyversions/owiener.svg)](https://pypi.org/project/owiener/)
+
 A Python3 Implementation of LLL.
 
 ## Installation
