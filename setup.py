@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
     name="olll",
     version="1.0.2",
-    author="orisano",
+    author="Nao Yonashiro",
     author_email="owan.orisano@gmail.com",
     description="A Python3 implementation of the LLL",
     license="MIT",
