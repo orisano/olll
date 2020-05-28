@@ -31,7 +31,7 @@ print(reduced_basis)
 ```
 
 ## Author
-Nao YONASHIRO(@orisano)
+Nao Yonashiro(@orisano)
 
 ## License
 MIT
