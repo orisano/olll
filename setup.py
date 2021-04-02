@@ -10,6 +10,10 @@ setup(
     license="MIT",
     url="https://github.com/orisano/olll",
     py_modules=["olll"],
+    install_requires=["numpy"],
+    extras_require={
+        "develop": ["pytest"]
+    },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: MIT License",
